@@ -59,60 +59,52 @@
        - For core development: Add '--prefer-source' to get full git clones, and remove '--no-dev' to get things like phpunit and behat installed.
        - Further reading: https://getcomposer.org/doc/03-cli.md#create-project
 
-2. *Only for *NIX users* **Setup folder rights**:
+2. **Setup folder rights**:
 
-       One common issue is that the `ezpublish/cache`, `ezpublish/logs` and `ezpublish/config` directories **must be writable both by the web server and the command line user**.
-       If your web server user is different from your command line user, you can run the following commands just once in your project to ensure that permissions will be set up properly.
+       Like most things, [Symfony documentation](http://symfony.com/doc/current/book/installation.html#checking-symfony-application-configuration-and-setup)
+       applies here, difference being that in eZ Platform directories that needs to be writable by cli and web server
+       user are `ezpublish/{cache,logs,sessions}`. Furthermore, future files and directories created by these two users
+       will need to inherit those access rights. *For security reasons, there is no need for web server to have access
+       to write to other directories.*
 
-       Change `www-data` to your web server user:
+       To make sure both have write access to only these, you can perform the following instructions from `<root-dir>`.
+       *Note: All instructions assume the installation was extracted with user you plan to use for executing future cli
+              commands, and not by web server user.*
 
-       A. **Using ACL on a system that supports chmod +a**
+       A. **Using ACL on a *Linux/BSD* system that has setfacl command installed**
 
-       ```bash
-       $ rm -rf ezpublish/cache/* ezpublish/logs/* ezpublish/sessions/*
-       $ sudo chmod +a "www-data allow delete,write,append,file_inherit,directory_inherit" \
-         ezpublish/{cache,logs,config,sessions} web
-       $ sudo chmod +a "`whoami` allow delete,write,append,file_inherit,directory_inherit" \
-         ezpublish/{cache,logs,config,sessions} web
-       ```
-
-       B. **Using ACL on a system that does not support chmod +a**
-
-       Some systems don't support chmod +a, but do support another utility called setfacl. You may need to enable ACL support on your partition and install setfacl before using it (as is the case with Ubuntu), like so:
+       The following example is adopted from Symfony doc for eZ Platform:
 
        ```bash
-       $ sudo setfacl -R -m u:www-data:rwx -m u:www-data:rwx \
-         ezpublish/{cache,logs,config,sessions} web
-       $ sudo setfacl -dR -m u:www-data:rwx -m u:`whoami`:rwx \
-         ezpublish/{cache,logs,config,sessions} web
+         $ HTTPDUSER=`ps axo user,comm | grep -E '[a]pache|[h]ttpd|[_]www|[w]ww-data|[n]ginx' | grep -v root | head -1 | cut -d\  -f1`
+         $ sudo setfacl -R -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX ezpublish/{cache,logs,sessions}
+         $ sudo setfacl -dR -m u:"$HTTPDUSER":rwX -m u:`whoami`:rwX ezpublish/{cache,logs,sessions}
        ```
 
-       C. **Using chown on systems that don't support ACL**
+       B. **Using  chown & chmod on any *Linux/BSD/OS X* system**
 
-       Some systems don't support ACL at all. You will need to set your web server's user as the owner of the required directories.
+       Before executing commands below, make sure cli user you'll use is member of web server group, or that you as of
+       this change *always* run eZ Platform/Symfony commands using web server user. And if you forget, worst thing that
+       happens is that you might need to rerun these commands again.
+
+       *Security note: web group must not be cli users primary group, otherwise web server will get access to it's files*
+
+       In the example below, replace `www-group` with your web server group.
 
        ```bash
-       $ sudo chown -R www-data:www-data ezpublish/{cache,logs,config,sessions} web
-       $ sudo find {ezpublish/{cache,logs,config,sessions},web} -type d | xargs sudo chmod -R 775
-       $ sudo find {ezpublish/{cache,logs,config},web} -type f | xargs sudo chmod -R 664
+       $ chown -R :www-group ezpublish/{cache,logs,sessions}
+       $ chmod -R ug+rwX ezpublish/{cache,logs,sessions}
+       $ chmod -R g+s ezpublish/{cache,logs,sessions}
        ```
 
-       D. **Using chmod**
+       C. **Setup folder rights on Windows**
 
-       If you can't use ACL and aren't allowed to change owner, you can use chmod, making the files writable by everybody. Note that this method really isn't recommended as it allows any user to do anything.
+       For your choice of web server you'll need to make sure web server user has read access to `<root-dir>`, and
+       write access to the following directories:
+       - ezpublish/cache
+       - ezpublish/logs
+       - ezpublish/sessions *Unless you choose to configure session to be stored by another system then file system*
 
-       ```bash
-       $ sudo find {ezpublish/{cache,logs,config,sessions},web} -type d | xargs sudo chmod -R 777
-       $ sudo find {ezpublish/{cache,logs,config,sessions},web} -type f | xargs sudo chmod -R 666
-       ```
-
-       When using chmod, note that newly created files (such as cache) owned by the web server's user may have different/restrictive permissions.
-       In this case, it may be required to change the umask so that the cache and log directories will be group-writable or world-writable (`umask(0002)` or `umask(0000)` respectively).
-
-       It may also possible to add the group ownership inheritance flag so new files inherit the current group, and use `775`/`664` in the command lines above instead of world-writable:
-       ```bash
-       $ sudo chmod g+s {ezpublish/{cache,logs,config,sessions},web}
-       ```
 
 3. **Configure a VirtualHost**:
 
