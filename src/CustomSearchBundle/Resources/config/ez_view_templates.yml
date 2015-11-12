@@ -1,0 +1,8 @@
+#system:
+#    demo_site_group:
+#        content_view:
+#            full:
+#                hinting:
+#                    template: TrainingLuisaSousaBundle:full:hinting_template.html.twig
+#                    match:
+#                        Identifier\ContentType: 2

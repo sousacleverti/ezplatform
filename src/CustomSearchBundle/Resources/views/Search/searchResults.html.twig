@@ -1,0 +1,32 @@
+{% extends 'eZDemoBundle::pagelayout.html.twig' %}
+
+{% block content %}
+{# Render the parent content block #}
+<h2>Found {{ contents | length }} entries for: "{{ search_query }}"</h2>
+
+<ul>
+    {% set i = 0 %}
+    {% for content in contents %}
+        {% set i = i + 1 %}
+        <li>
+            <strong>{{ i }}. </strong>
+            <a href=
+               '{{ path("custom_search_content_display",
+                    {'locationId': content.getVersionInfo().getContentInfo().mainLocationId,
+                     'contentId': content.id, 'custom_search': search_query })
+                }}'>
+                {# Display the name of the content #}
+                {{ ez_content_name(content) }}
+            </a>
+            <sub>
+                {# Display the contentType name after the content name
+                    array(
+                        'contentTypeId' => 'contentTypeName'
+                    );
+                #}
+                ({{ contentTypes[content.getVersionInfo().getContentInfo().contentTypeId] }})
+            </sub>
+        </li>
+    {% endfor %}
+<ul>
+{% endblock %}

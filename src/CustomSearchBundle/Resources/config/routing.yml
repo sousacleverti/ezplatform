@@ -1,0 +1,12 @@
+custom_search_index:
+    path: /search
+    defaults: { _controller: CustomSearchBundle:Search:search }
+
+custom_search_index2:
+    path: /search/
+    defaults: { _controller: CustomSearchBundle:Search:search }
+    methods: [POST|GET]
+
+custom_search_content_display:
+    path:     /search/{locationId}/{contentId}/{custom_search}
+    defaults: { _controller: CustomSearchBundle:Search:content }

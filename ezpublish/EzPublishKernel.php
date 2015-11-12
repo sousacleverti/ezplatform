@@ -51,6 +51,9 @@ class EzPublishKernel extends Kernel
             new EzSystems\RepositoryFormsBundle\EzSystemsRepositoryFormsBundle(),
             new EzSystems\EzPlatformSolrSearchEngineBundle\EzSystemsEzPlatformSolrSearchEngineBundle(),
             new EzSystems\EzPlatformXmlTextFieldTypeBundle\EzSystemsEzPlatformXmlTextFieldTypeBundle(),
+            new Bmatzner\FoundationBundle\BmatznerFoundationBundle(),
+            new CustomSearchBundle\CustomSearchBundle(),
+	    new eZ\Bundle\EzPublishLegacyBundle\EzPublishLegacyBundle($this),
         );
 
         switch ($this->getEnvironment()) {
@@ -95,5 +98,13 @@ class EzPublishKernel extends Kernel
         }
 
         $loader->load($configFile);
+    }
+
+    protected function initializeContainer() {
+        parent::initializeContainer();
+        if (PHP_SAPI == 'cli') {
+            $this->getContainer()->enterScope('request');
+            $this->getContainer()->set('request', new \Symfony\Component\HttpFoundation\Request(), 'request');
+        }
     }
 }

@@ -1,0 +1,23 @@
+{# Include another content type, in order to inject some custom JS #}
+{{ render( controller( "ez_content:viewContent", {"locationId": locationId, "contentId": contentId, "viewType": "full", "layout": true} ) ) }}
+
+
+{% block javascripts %}
+    {#{% javascripts '@CustomSearchBundle/Resources/public/js/*' %}
+        <script src="{{ asset_url }}"></script>#}
+    <script>
+            $(window).load(function () {
+            if (confirm('Do you want to highlight your search token(s)?')) {
+                var text = '{{ custom_search }}';
+                var pageEl = document.getElementById('page');
+                var contsEl = pageEl.getElementsByClassName('container');
+                for(i = 0; i < contsEl.length; ++i)
+                  contsEl[i].innerHTML = contsEl[i].innerHTML.replace(
+                          new RegExp(text + '(?!([^<]+)?>)', 'gi'),
+                  '<b style="background-color:#ff0;font-size:100%">$&</b>');
+            }
+        });
+    </script>
+    {#{% endjavascripts %}#}
+{% endblock %}
+
