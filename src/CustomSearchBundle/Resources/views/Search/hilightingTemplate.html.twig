@@ -1,12 +1,58 @@
 {# Include another content type, in order to inject some custom JS #}
 {{ render( controller( "ez_content:viewContent", {"locationId": locationId, "contentId": contentId, "viewType": "full", "layout": true} ) ) }}
 
+{% block stylesheets %}
+<style>
+    .btn {
+      background: #3498db;
+      background-image: -webkit-linear-gradient(top, #3498db, #2980b9);
+      background-image: -moz-linear-gradient(top, #3498db, #2980b9);
+      background-image: -ms-linear-gradient(top, #3498db, #2980b9);
+      background-image: -o-linear-gradient(top, #3498db, #2980b9);
+      background-image: linear-gradient(to bottom, #3498db, #2980b9);
+      -webkit-border-radius: 16;
+      -moz-border-radius: 16;
+      border-radius: 16px;
+      font-family: Arial;
+      color: #ffffff;
+      font-size: 20px;
+      padding: 10px 20px 10px 20px;
+      text-decoration: none;
+    }
+
+    .btn:hover {
+      background: #3cb0fd;
+      background-image: -webkit-linear-gradient(top, #3cb0fd, #3498db);
+      background-image: -moz-linear-gradient(top, #3cb0fd, #3498db);
+      background-image: -ms-linear-gradient(top, #3cb0fd, #3498db);
+      background-image: -o-linear-gradient(top, #3cb0fd, #3498db);
+      background-image: linear-gradient(to bottom, #3cb0fd, #3498db);
+      text-decoration: none;
+    }
+
+    #btn {
+        position:fixed;left:0;top:0;padding:10px;
+        opacity: 0.7;
+        filter: alpha(opacity=70);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<div id="btn" class="btn">
+Toggle Search Token Highlighting
+</div>
+{% endblock %}
 
 {% block javascripts %}
     {#{% javascripts '@CustomSearchBundle/Resources/public/js/*' %}
         <script src="{{ asset_url }}"></script>#}
     <script>
-            $(window).load(function () {
+        $('#btn').click(function(){
+           alert();
+        });
+        $(window).load(function () {
             if (confirm('Do you want to highlight your search token(s)?')) {
                 var text = '{{ custom_search }}';
                 var pageEl = document.getElementById('page');
