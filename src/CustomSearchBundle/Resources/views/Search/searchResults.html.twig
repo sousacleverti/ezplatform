@@ -2,13 +2,14 @@
 
 {% block content %}
 {# Render the parent content block #}
-<h2>Found {{ contents | length }} entries for: "{{ search_query }}"</h2>
+<h1>Found {{ contents | length }} entries for: "{{ search_query }}"</h1>
 
 <ul>
     {% set i = 0 %}
     {% for content in contents %}
         {% set i = i + 1 %}
         <li>
+            <h3>
             <strong>{{ i }}. </strong>
             <a href=
                '{{ path("custom_search_content_display",
@@ -24,8 +25,33 @@
                         'contentTypeId' => 'contentTypeName'
                     );
                 #}
-                ({{ contentTypes[content.getVersionInfo().getContentInfo().contentTypeId] }})
+                {% set contentType = contentTypes[content.getVersionInfo().getContentInfo().contentTypeId] %}
+                ({{ contentType }})
             </sub>
+            </h3>
+
+            <hr/>
+            <div style="padding-left:4.5em;">
+                {% if content.fields.intro is defined %}
+                    {{ ez_render_field(content, 'intro') }}
+                {% elseif  content.fields.description is defined %}
+                    {{ ez_render_field(content, 'description') }}
+                {% elseif  content.fields.description is defined %}
+                    {{ ez_render_field(content, 'description') }}
+                {% endif %}
+            <sub style="color:gray;">
+                {% if content.fields.publish_date is defined and
+                      content.fields.author is defined %}
+                Published
+                {% endif %}
+                {% if content.fields.publish_date is defined %}
+                on {{ ez_field_value( content, 'publish_date') | date('d-m-Y @ h:m:s')}}
+                {% endif %}
+                {% if content.fields.author is defined %}
+                by {{ ez_field_value( content, 'author') }}
+                {% endif %}
+            </sub>
+            </div>
         </li>
     {% endfor %}
 <ul>
