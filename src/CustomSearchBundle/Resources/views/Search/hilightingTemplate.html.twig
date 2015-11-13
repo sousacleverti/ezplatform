@@ -1,4 +1,3 @@
-{# Include another content type, in order to inject some custom JS #}
 {{ render( controller( "ez_content:viewContent", {"locationId": locationId, "contentId": contentId, "viewType": "full", "layout": true} ) ) }}
 
 {% block stylesheets %}
@@ -47,10 +46,7 @@
 {% endblock %}
 
 {% block content %}
-
-<div id="btn" class="btn">
-Toggle Search Token Hilighting
-</div>
+    <div id="btn" class="btn">Toggle Search Token Hilighting</div>
 {% endblock %}
 
 {% block javascripts %}
