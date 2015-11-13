@@ -31,9 +31,17 @@
     }
 
     #btn {
-        position:fixed;left:0;top:0;padding:10px;
+        position:fixed;left:5px;top:5px;padding:10px;
         opacity: 0.7;
         filter: alpha(opacity=70);
+        -webkit-box-shadow: 0px 0px 6px 4px rgba(0,0,0,0.55);
+        -moz-box-shadow: 0px 0px 6px 4px rgba(0,0,0,0.55);
+        box-shadow: 0px 0px 6px 4px rgba(0,0,0,0.55);
+    }
+
+    .hilight {
+        background-color:#ff0;
+        color: #000;
     }
 </style>
 {% endblock %}
@@ -41,7 +49,7 @@
 {% block content %}
 
 <div id="btn" class="btn">
-Toggle Search Token Highlighting
+Toggle Search Token Hilighting
 </div>
 {% endblock %}
 
@@ -50,18 +58,18 @@ Toggle Search Token Highlighting
         <script src="{{ asset_url }}"></script>#}
     <script>
         $('#btn').click(function(){
-           alert();
+        if($('.hilightable').hasClass('hilight'))
+            $('.hilightable').removeClass('hilight');
+        else
+            $('.hilightable').addClass('hilight');
         });
         $(window).load(function () {
-            if (confirm('Do you want to highlight your search token(s)?')) {
-                var text = '{{ custom_search }}';
-                var pageEl = document.getElementById('page');
-                var contsEl = pageEl.getElementsByClassName('container');
-                for(i = 0; i < contsEl.length; ++i)
-                  contsEl[i].innerHTML = contsEl[i].innerHTML.replace(
-                          new RegExp(text + '(?!([^<]+)?>)', 'gi'),
-                  '<b style="background-color:#ff0;font-size:100%">$&</b>');
-            }
+            var text = '{{ custom_search }}';
+            var el = $('.container');
+            for(i = 0; i < el.length; ++i)
+              el[i].innerHTML = el[i].innerHTML.replace(
+                      new RegExp(text + '(?!([^<]+)?>)', 'gi'),
+              '<span class="hilight hilightable">$&</span>');
         });
     </script>
     {#{% endjavascripts %}#}
