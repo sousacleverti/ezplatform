@@ -1,5 +1,10 @@
 {{ render( controller( "ez_content:viewContent", {"locationId": locationId, "contentId": contentId, "viewType": "full", "layout": true} ) ) }}
 
+{#
+
+TODO: Move CSSs and JSs to Resources/public folder
+
+#}
 {% block stylesheets %}
 <style>
     .btn {
@@ -50,8 +55,6 @@
 {% endblock %}
 
 {% block javascripts %}
-    {#{% javascripts '@CustomSearchBundle/Resources/public/js/*' %}
-        <script src="{{ asset_url }}"></script>#}
     <script>
         $('#btn').click(function(){
         if($('.hilightable').hasClass('hilight'))
@@ -68,5 +71,4 @@
               '<span class="hilight hilightable">$&</span>');
         });
     </script>
-    {#{% endjavascripts %}#}
 {% endblock %}
