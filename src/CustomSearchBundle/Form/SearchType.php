@@ -30,7 +30,7 @@ class SearchType extends AbstractType {
             'label' => ' ',
             'data' => array('16', '17') // preselected data: 16->Article; 17->Blog
        ));
-        $builder->add('save', 'submit', array('label' => '> Search <'));
+        $builder->add('save', 'submit', array('label' => 'Search'));
     }
 
     public function configureOptions(OptionsResolver $resolver) {

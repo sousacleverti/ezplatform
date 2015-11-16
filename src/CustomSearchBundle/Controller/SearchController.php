@@ -10,62 +10,19 @@ use eZ\Publish\API\Repository\Values\Content\Query\Criterion;
 use Symfony\Component\HttpFoundation\Request;
 
 class SearchController extends Controller {
-/*
-    public function indexAction($name) {
-        $repository = $this->getRepository();
-        $content = $repository->sudo(
-                function () use ($repository, $name) {
-            $contentTypeService = $repository->getContentTypeService();
-            $contentType = $contentTypeService->loadContentTypeByIdentifier('folder');
-            $locationService = $repository->getLocationService();
-            $locationCreateStruct = $locationService->newLocationCreateStruct(2);
-
-            $contentService = $repository->getContentService();
-            $contentCreateStruct = $contentService->newContentCreateStruct($contentType, 'eng-GB');
-            $contentCreateStruct->setField('name', $name);
-            $contentDraft = $contentService->createContent($contentCreateStruct, array($locationCreateStruct));
-
-            return $content = $contentService->publishVersion($contentDraft->versionInfo);
-        }
-        );
-        return $this->render(
-                        'TrainingLuisaSousaBundle:Default:index.html.twig', array(
-                    'name' => $name,
-                    'content' => $content
-                        )
-        );
-    }
-    public function searchAction($id) {
-        $repository = $this->getRepository();
-        $searchService = $repository->getSearchService();
-
-        $query = new Query();
-        $criterion = new Criterion\ParentLocationId($id);
-        $query->query = $criterion;
-
-        $searchResult = $searchService->findContent($query);
-        $searchHits = $searchResult->searchHits;
-        $totalHits = $searchResult->totalCount;
-        $contents = array();
-        foreach ($searchHits as $searchHit) {
-            $contents[] = $searchHit->valueObject->getVersionInfo()->getName();
-        }
-
-        return $this->render(
-                        'TrainingLuisaSousaBundle:Default:search.html.twig', array(
-                    'count' => $totalHits,
-                    'contents' => $contents
-                        )
-        );
-    }
- */
-
+    /**
+     * Action for the search form and search form submition
+     * 
+     * @param Request $request
+     * @return Response A Response instance
+     */
     public function searchAction(Request $request) {
         $availableContentTypes = $this->getAvailableContentTypes();
         $search = new Search($availableContentTypes);
 
+        // GET request method to enable sharing the result search link
         $form = $this->createForm(new SearchType(), $search, array(
-            'method' => 'POST')
+            'method' => 'GET')
         );
         $form->handleRequest($request);
         // Render search results when the form is successfully submited
@@ -85,7 +42,14 @@ class SearchController extends Controller {
         );
     }
 
-    /* Show content in a custom template in order to be able to add some custom javascript */
+    /**
+     * Show content in a custom template in order to be able to add some custom javascript
+     *
+     * @param type $locationId
+     * @param type $contentId
+     * @param type $custom_search
+     * @return Response A Response instance
+     */
     public function contentAction($locationId, $contentId, $custom_search) {
         return $this->render('CustomSearchBundle:Search:hilightingTemplate.html.twig', array(
                     'locationId' => $locationId,
@@ -98,7 +62,12 @@ class SearchController extends Controller {
      *                  START of eZ Publish Public API functions                       *
     \***********************************************************************************/
 
-    /* Return an array with all available ezpublish content type indentifiers and names */
+    /**
+     * Return an array with all available ezpublish content type indentifiers and names
+     *
+     * @return \eZ\Publish\API\Repository\Values\ContentType\ContentType[]
+     *
+     */
     private function getAvailableContentTypes() {
         $repository = $this->getRepository();
         $contentTypeService = $repository->getContentTypeService();
