@@ -3,29 +3,38 @@
 {% block content %}
     <style>
         #search_contentTypes {
-            height:150px;
-            width:250px;
+            height:200px;
+            width:100%;
             padding: 10px;
         }
         #search_searchQuery {
             top:0px;
             width:350px;
-            margin-bottom: 15px;
+            margin-bottom:15px;
         }
-        #searchTips_ {
+        #searchTips {
             width: 350px;
+        }
+        #search_save {
+            width: 160px;
+            height: 40px;
+            margin-bottom:15px;
+        }
+        #magnifierImg {
+            height: 200px;
+            opacity: 0.5;
         }
     </style>
     <h1>Custom eZ Search</h1>
     <p>Search for anything here...</p>
 
     {{ form_start(form) }}<br>
-        <table style="margin: 0 auto; ">
-            <trpadding-right:60px;>
+        <table style="margin: 0 auto">
+            <tr>
                 <td style="padding-right:60px;vertical-align:top;">
                     <strong>Search</strong>
                     {{ form_row(form.searchQuery) }}
-                    <div id="searchTips_">
+                    <div id="searchTips">
                         <p>
                             Search for some text within an article, blog, or on any other
                             content type available.
@@ -39,8 +48,16 @@
                         </p>
                     </div>
                 </td>
-                <td style="padding-right:60px;vertical-align:top;width:350px;"><strong>Select your filter(s)</strong>{{ form_row(form.contentTypes) }}</td>
-                <td style="padding-right:60px;width:320px;">{{ form_widget(form.save) }}</td>
+                <td style="padding-right:60px;vertical-align:top;width:350px;">
+                    <strong>Select your filter(s)</strong>
+                    {{ form_row(form.contentTypes, { 'attr':{'height':'100%'} }) }}
+                </td>
+                <td>
+                    <img id="magnifierImg" src="{{ asset('bundles/customsearch/images/search-icon-md.png') }}">
+                </td>
+            </tr>
+            <tr>
+                <td style="padding-right:60px;height:80px;;vertical-align:bottom;">{{ form_widget(form.save) }}</td>
             </tr>
         </table>
     {{ form_end(form) }}
