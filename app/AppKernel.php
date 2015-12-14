@@ -46,6 +46,7 @@ class AppKernel extends Kernel
             new EzSystems\RepositoryFormsBundle\EzSystemsRepositoryFormsBundle(),
             new EzSystems\EzPlatformSolrSearchEngineBundle\EzSystemsEzPlatformSolrSearchEngineBundle(),
             new AppBundle\AppBundle(),
+            new TestBundle\TestBundle(),
         );
 
         switch ($this->getEnvironment()) {

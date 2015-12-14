@@ -1,0 +1,31 @@
+# This file contains the default configuration for behat testing using EzSystems/BehatBundle
+default:
+    extensions:
+        Behat\MinkExtension:
+            base_url: 'http://ezp6.local'
+            goutte: ~
+            selenium2:
+                wd_host: 'http://localhost:4444/wd/hub'
+            javascript_session: selenium2
+            browser_name: firefox
+
+        Behat\Symfony2Extension:
+            kernel:
+                bootstrap: app/autoload.php
+                path: app/AppKernel.php
+                class: AppKernel
+                env: behat
+                debug: false
+
+        jarnaiz\JUnitFormatter\JUnitFormatterExtension:
+            filename: report.xml
+            outputDir: %paths.base%/app/logs/junit
+
+    # default profile: no suites
+    suites: ~
+
+imports:
+    - vendor/ezsystems/ezpublish-kernel/eZ/Bundle/EzPublishCoreBundle/behat.yml
+    - vendor/ezsystems/ezpublish-kernel/eZ/Bundle/EzPublishRestBundle/behat.yml
+    - vendor/ezsystems/platform-ui-bundle/behat.yml
+    - src/TestBundle/behat.yml
